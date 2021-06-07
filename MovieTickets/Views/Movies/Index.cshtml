@@ -1,0 +1,46 @@
+﻿@model List<MT.Data.Models.Movie>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Movies</h1>
+
+<div class="container">
+    <div class="m-3">
+        <a class="btn btn-info" asp-controller="Movies" asp-action="Create">Add New Movie</a>
+        <a class="btn btn-info" asp-controller="Movies" asp-action="FilterMovies">Filter by Date</a>
+    </div>
+
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+
+        if (i % 3 == 0)
+        {
+            @:<div class="row m-2">
+            }
+
+            <div class="card-deck m-3">
+                <div class="card" style="width: 18rem">
+                    <img class="card-img-top" src="@item.MovieImage" style="max-height: 350px" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.MovieName</h5>
+                        <p class="card-text">@item.Genre</p>
+                        <p class="card-text">@item.Showtime</p>
+                        <p class="card-text">$@item.TicketPrice</p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="Movies" asp-action="BuyTicket" asp-route-id="@item.Id" class="btn btn-info">Buy Tickets</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a>
+                    </div>
+                </div>
+            </div>
+
+            if (i % 3 == 2)
+            {
+            @:</div>
+        }
+    }
+
+</div>
