@@ -36,7 +36,7 @@
                             <td>@item.Movie.TicketPrice</td>
                             <td>@item.Quantity</td>
                             <td>$@(item.Movie.TicketPrice * item.Quantity)</td>
-                            <td><a asp-route-productId="@item.Id" asp-action="DeleteTicket" class="btn btn-danger">Delete</a></td>
+                            <td><a asp-route-ticketId="@item.Id" asp-action="DeleteTicket" class="btn btn-danger">Delete</a></td>
                         </tr>
                     }
                 }

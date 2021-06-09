@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ namespace MovieTickets.Controllers
         }
 
         // GET: Movies/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -71,6 +73,7 @@ namespace MovieTickets.Controllers
         }
 
         // GET: Movies/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -91,6 +94,7 @@ namespace MovieTickets.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(Guid id, [Bind("MovieName,MovieImage,Genre,TicketPrice,Showtime,Id")] Movie movie)
         {
             if (id != movie.Id)
@@ -121,6 +125,7 @@ namespace MovieTickets.Controllers
         }
 
         // GET: Movies/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -166,6 +171,7 @@ namespace MovieTickets.Controllers
 
         }
 
+        [Authorize(Roles = "Admin, Customer")]
         public IActionResult BuyTicket(Guid? id)
         {
             var model = this._movieService.GetCartInfo(id);

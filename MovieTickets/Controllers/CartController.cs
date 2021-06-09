@@ -15,6 +15,7 @@ namespace MovieTickets.Controllers
         {
             _cartService = cartService;
         }
+
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

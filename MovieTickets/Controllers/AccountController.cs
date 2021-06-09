@@ -15,11 +15,14 @@ namespace MovieTickets.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private readonly RoleManager<IdentityRole> roleManager;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, 
+            RoleManager<IdentityRole> roleManager)
         {
 
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         public IActionResult Register()
@@ -48,6 +51,16 @@ namespace MovieTickets.Controllers
                     var result = await userManager.CreateAsync(user, request.Password);
                     if (result.Succeeded)
                     {
+                        if(!await roleManager.RoleExistsAsync(UserRole.AdminUser))
+                        {
+                            await roleManager.CreateAsync(new IdentityRole(UserRole.AdminUser));
+                        }
+                        if (!await roleManager.RoleExistsAsync(UserRole.Customer))
+                        {
+                            await roleManager.CreateAsync(new IdentityRole(UserRole.Customer));
+                        }
+
+                        await userManager.AddToRoleAsync(user, UserRole.AdminUser);
                         return RedirectToAction("Login");
                     }
                     else

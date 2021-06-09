@@ -1,0 +1,63 @@
+﻿@using MT.Data.Identity
+@model MT.Data.Identity.ManageRoles
+
+@{
+    ViewData["Title"] = "Manage Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Administrators</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Email</td>
+        </tr>
+    </thead>
+
+    @foreach (var user in Model.Admins)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+        </tr>
+    }
+</table>
+
+<h3>Everyone</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Email</td>
+        </tr>
+    </thead>
+
+    @foreach (var user in Model.Users)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+            <td></td>
+            <td></td>
+            <td>
+                @Html.DropDownListFor(r => r.UserRole, new SelectList(Enum.GetValues(typeof(Role))), "Select Role");
+                
+                @*<div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseRoleBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Choose Role
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Admin</a>
+                        <a class="dropdown-item" href="#">Customer</a>
+                    </div>
+                </div>*@
+            </td>
+            <td>
+                <button class="btn btn-secondary" asp-controller="Admin" asp-action="AddToRole" asp-route-id="@user.Id">Update</button>
+            </td>
+        </tr>
+    }
+</table>
