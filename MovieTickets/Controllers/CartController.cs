@@ -35,11 +35,12 @@ namespace MovieTickets.Controllers
             }
         }
         
-        public Boolean OrderTickets()
+        public IActionResult OrderTickets()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = this._cartService.orderNow(userId);
-            return result;
+
+            return RedirectToAction("Index", "Cart");
         }
     }
 }

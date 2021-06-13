@@ -59,8 +59,9 @@ namespace MovieTickets.Controllers
                         {
                             await roleManager.CreateAsync(new IdentityRole(UserRole.Customer));
                         }
-
-                        await userManager.AddToRoleAsync(user, UserRole.AdminUser);
+                        
+                        await userManager.AddToRoleAsync(user, UserRole.Customer);
+                        
                         return RedirectToAction("Login");
                     }
                     else

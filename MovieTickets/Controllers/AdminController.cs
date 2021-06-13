@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MT.Data.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MovieTickets.Controllers
@@ -13,9 +15,11 @@ namespace MovieTickets.Controllers
     public class AdminController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
-        public AdminController(UserManager<AppUser> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AdminController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -30,10 +34,15 @@ namespace MovieTickets.Controllers
 
             return View(model);
         }
-       /* public IActionResult AddToRole(Guid? id)
+       
+        
+        public IActionResult AddToRole(string userId)
         {
-            ManageRoles roles = new ManageRoles();
-            var role = roles.
-        }*/
+            var user = _userManager.FindByIdAsync(userId);
+            
+            //var roles = manage.UserRole;
+
+            return RedirectToAction("Index");
+        }
     }
 }

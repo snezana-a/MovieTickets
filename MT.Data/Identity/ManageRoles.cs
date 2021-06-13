@@ -8,7 +8,8 @@ namespace MT.Data.Identity
     {
         public List<AppUser> Admins { get; set; }
         public List<AppUser> Users { get; set; }
-        public Role UserRole { get; set; } 
+        //public Role UserRole { get; set; } 
+        public List<UserRole> Roles { get; set; }
     }
 
     public enum Role

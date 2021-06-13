@@ -15,49 +15,66 @@
             <td>Email</td>
         </tr>
     </thead>
-
-    @foreach (var user in Model.Admins)
-    {
-        <tr>
-            <td>@user.Id</td>
-            <td>@user.Email</td>
-        </tr>
-    }
+    <tbody>
+        @foreach (var user in Model.Admins)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <h3>Everyone</h3>
 
-<table class="table">
-    <thead>
-        <tr>
-            <td>Id</td>
-            <td>Email</td>
-        </tr>
-    </thead>
+<div class="container">
+    <table class="table" id="user-table">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>E-mail</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Users.Count; i++)
+            {
+                var item = Model.Users[i];
+                //var role = Model.Roles;
+                <tr>
+                    <td id="userId">
+                        @item.Id
+                    </td>
+                    <td id="userEmail">
+                        @item.Email
+                    </td>
+                    <td>
+                        <select id="roles" name="Role">
+                            <option selected="selected" value=""></option>
+                            <option value="Admin">Admin</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary" asp-controller="Admin" asp-action="AddToRole" asp-route-id="@item.Id">Update</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-    @foreach (var user in Model.Users)
-    {
-        <tr>
-            <td>@user.Id</td>
-            <td>@user.Email</td>
-            <td></td>
-            <td></td>
-            <td>
-                @Html.DropDownListFor(r => r.UserRole, new SelectList(Enum.GetValues(typeof(Role))), "Select Role");
-                
-                @*<div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseRoleBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Choose Role
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Admin</a>
-                        <a class="dropdown-item" href="#">Customer</a>
-                    </div>
-                </div>*@
-            </td>
-            <td>
-                <button class="btn btn-secondary" asp-controller="Admin" asp-action="AddToRole" asp-route-id="@user.Id">Update</button>
-            </td>
-        </tr>
-    }
-</table>
+</div>
+
+@section Scripts{ 
+<script>
+    $(document).ready(function () {
+        $('#btn-update').click(function () {
+            var tr = $(this).parent.parent;
+            var userId = document.getElementById('#userId').innerText;
+            console.log(tr + " " + userId);
+        });
+    });
+</script>
+}
