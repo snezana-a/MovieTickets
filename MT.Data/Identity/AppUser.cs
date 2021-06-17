@@ -11,6 +11,7 @@ namespace MT.Data.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }
+        //public virtual ManageRoles Roles { get; set; }
         public virtual Cart UserCart { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

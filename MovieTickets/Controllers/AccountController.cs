@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MT.Data.Identity;
 using MT.Data.Models;
+using MT.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +18,30 @@ namespace MovieTickets.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly ApplicationDbContext context;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, 
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
 
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            this.context = context;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var admins = (await userManager.GetUsersInRoleAsync("Admin")).ToList();
+            var users = (await userManager.GetUsersInRoleAsync("Customer")).ToList();
+            
+            var model = new ManageRoles
+            {
+                Admins = admins,
+                Users = users
+            };
+
+            return View(model);
+        }
         public IActionResult Register()
         {
             UserRegisterDto model = new UserRegisterDto();
@@ -54,14 +71,15 @@ namespace MovieTickets.Controllers
                         if(!await roleManager.RoleExistsAsync(UserRole.AdminUser))
                         {
                             await roleManager.CreateAsync(new IdentityRole(UserRole.AdminUser));
+                            await userManager.AddToRoleAsync(user, UserRole.AdminUser);
                         }
                         if (!await roleManager.RoleExistsAsync(UserRole.Customer))
                         {
                             await roleManager.CreateAsync(new IdentityRole(UserRole.Customer));
+                            await userManager.AddToRoleAsync(user, UserRole.Customer);
                         }
-                        
                         await userManager.AddToRoleAsync(user, UserRole.Customer);
-                        
+
                         return RedirectToAction("Login");
                     }
                     else
@@ -139,6 +157,27 @@ namespace MovieTickets.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        public async Task<IActionResult> AddToRoleAsync(AppUser user, string role)
+        {
+            var oldRole = "";
+            if (await userManager.IsInRoleAsync(user, "Customer"))
+            {
+                oldRole = "Customer";
+            }
+            else
+            {
+                oldRole = "Admin";
+            }
+
+            await userManager.RemoveFromRoleAsync(user, oldRole);
+
+            await userManager.AddToRoleAsync(user, role);
+
+            context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }

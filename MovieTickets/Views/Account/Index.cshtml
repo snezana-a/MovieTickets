@@ -1,0 +1,95 @@
+﻿@using MT.Data.Identity
+@model MT.Data.Identity.ManageRoles
+
+@{
+    ViewData["Title"] = "Manage Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3>Administrators</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Email</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Admins)
+        {
+            <tr>
+                <td class="userId">@user.Id</td>
+                <td class="userEmail">@user.Email</td>
+                <td>
+                    <select class="selectCustomer" name="Roles">
+                        <option value=""></option>
+                        <option value="Admin">Admin</option>
+                        <option value="Customer">Customer</option>
+                    </select>
+                </td>
+                <td>
+                    <a class="btn btn-secondary selectRole">Update</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Customers</h3>
+
+<div class="container">
+    <table class="table" id="user-table">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>E-mail</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Users.Count; i++)
+            {
+                var item = Model.Users[i];
+                //var role = Model.Roles;
+                <tr>
+                    <td class="userId">
+                        @item.Id
+                    </td>
+                    <td class="userEmail">
+                        @item.Email
+                    </td>
+                    <td>
+                        <select class="selectCustomer" name="Roles">
+                            <option value=""></option>
+                            <option value="Admin">Admin</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary selectRole">Update</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+            $('select').change(function () {
+                $('a').attr('href', "Account/AddToRole/" + $(this).parent().parent().find('.userId')[0].innerText + "?role=" + $(this).children('option:selected').val());
+            });
+        });
+    </script>
+} 
