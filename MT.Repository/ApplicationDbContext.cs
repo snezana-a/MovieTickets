@@ -19,6 +19,7 @@ namespace MT.Repository
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderedTickets> OrderedTickets { get; set; }
         public virtual DbSet<TicketsInCart> CartTickets { get; set; }
+        public virtual DbSet<EmailMessage> EmailMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

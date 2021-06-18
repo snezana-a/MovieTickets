@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GemBox.Document" Version="33.0.1249" />
+    <PackageReference Include="MailKit" Version="2.13.0" />
+    <PackageReference Include="Stripe.net" Version="39.54.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MT.Data\MT.Data.csproj" />
     <ProjectReference Include="..\MT.Repository\MT.Repository.csproj" />
   </ItemGroup>

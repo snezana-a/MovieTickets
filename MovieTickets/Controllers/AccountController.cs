@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> userManager;
@@ -29,6 +30,7 @@ namespace MovieTickets.Controllers
             this.context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var admins = (await userManager.GetUsersInRoleAsync("Admin")).ToList();
@@ -159,6 +161,7 @@ namespace MovieTickets.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddToRoleAsync(AppUser user, string role)
         {
             var oldRole = "";

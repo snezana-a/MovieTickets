@@ -7,12 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MT.Data;
 using MT.Data.Identity;
 using MT.Repository;
 using MT.Repository.Implementation;
 using MT.Repository.Interface;
 using MT.Services.Implementation;
 using MT.Services.Interface;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +24,12 @@ namespace MovieTickets
 {
     public class Startup
     {
+        private EmailSettings emailService;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            emailService = new EmailSettings();
+            Configuration.GetSection("EmailSettings").Bind(emailService);
         }
 
         public IConfiguration Configuration { get; }
@@ -42,17 +47,23 @@ namespace MovieTickets
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<ICartService, CartService>();
-            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IOrderService, MT.Services.Implementation.OrderService>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

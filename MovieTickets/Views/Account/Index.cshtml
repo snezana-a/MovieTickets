@@ -88,7 +88,8 @@
        
         $(document).ready(function () {
             $('select').change(function () {
-                $('a').attr('href', "Account/AddToRole/" + $(this).parent().parent().find('.userId')[0].innerText + "?role=" + $(this).children('option:selected').val());
+                $('a').attr('href', "Account/AddToRole/" + $(this).parent().parent().find('.userId')[0].innerText
+                    + "?role=" + $(this).children('option:selected').val());
             });
         });
     </script>

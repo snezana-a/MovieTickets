@@ -15,13 +15,16 @@ namespace MT.Services.Implementation
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<OrderedTickets> _orderedTicketsRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IRepository<EmailMessage> _mailRepository;
 
-        public CartService(IRepository<Cart> cartRepository, IRepository<Order> orderRepository, IRepository<OrderedTickets> orderedTicketsRepository, IUserRepository userRepository)
+        public CartService(IRepository<Cart> cartRepository, IRepository<Order> orderRepository, 
+            IRepository<OrderedTickets> orderedTicketsRepository, IUserRepository userRepository, IRepository<EmailMessage> mailRepository)
         {
             _cartRepository = cartRepository;
             _orderedTicketsRepository = orderedTicketsRepository;
             _orderRepository = orderRepository;
             _userRepository = userRepository;
+            _mailRepository = mailRepository;
         }
         public bool deleteTicket(string userId, Guid id)
         {
@@ -73,12 +76,10 @@ namespace MT.Services.Implementation
                 var loggedInUser = this._userRepository.Get(userId);
                 var userCart = loggedInUser.UserCart;
 
-                /*EmailMessage message = new EmailMessage();
+                EmailMessage message = new EmailMessage();
                 message.MailTo = loggedInUser.Email;
                 message.Subject = "Successfully created order!";
-                message.Status = false;*/
-
-
+                message.Status = false;
 
                 Order order = new Order
                 {
@@ -118,7 +119,7 @@ namespace MT.Services.Implementation
 
                 sb.AppendLine("Total price: $" + totalPrice.ToString());
 
-                //message.Content = sb.ToString();
+                message.Content = sb.ToString();
 
                 orderedTickets.AddRange(result);
 
@@ -129,7 +130,7 @@ namespace MT.Services.Implementation
 
                 loggedInUser.UserCart.CartTickets.Clear();
 
-                //this._mailRepository.Insert(message);
+                this._mailRepository.Insert(message);
 
                 this._userRepository.Update(loggedInUser);
 
